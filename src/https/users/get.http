@@ -1,0 +1,2 @@
+GET http://localhost:4000/api/users/profile
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGY4YTMxZmQ3OWRlZjk3YmVkYzEyYTgiLCJlbWFpbCI6InZpcmF0QGdtYWlsLmNvbSIsImlhdCI6MTc2MTEzMDI2NCwiZXhwIjoxNzYxMjE2NjY0fQ.KIzAhP-zNSFirWoE_IFTQQnzHuMOj9s8-QP7BQ29io8

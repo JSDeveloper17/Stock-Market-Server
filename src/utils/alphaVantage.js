@@ -1,0 +1,26 @@
+import axios from "axios";
+
+const ALPHA_BASE_URL = "https://www.alphavantage.co/query";
+const API_KEY = process.env.ALPHA_VANTAGE_API_KEY;
+
+export const getLivePrice = async (symbol) => {
+  try {
+    const response = await axios.get(ALPHA_BASE_URL, {
+      params: {
+        function: "GLOBAL_QUOTE",
+        symbol,
+        apikey: API_KEY,
+      },
+    });
+
+    const quote = response.data["Global Quote"];
+    if (!quote || !quote["05. price"]) {
+      throw new Error("Invalid stock symbol or data unavailable.");
+    }
+
+    return parseFloat(quote["05. price"]);
+  } catch (error) {
+    console.error("AlphaVantage API error:", error.message);
+    throw new Error("Unable to fetch live stock price");
+  }
+};
