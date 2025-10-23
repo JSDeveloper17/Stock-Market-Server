@@ -2,7 +2,7 @@ const {Schema, model} = require("mongoose")
 
 const portFolioSchema = new Schema({
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Users",
       required: true,
     },
@@ -21,6 +21,18 @@ const portFolioSchema = new Schema({
       required: true,
       default: 0,
     },
+    currentPrice: {
+    type: Number,
+    default: 0,
+  },
+  totalInvestment: {
+    type: Number,
+    default: 0,
+  },
+  unrealizedProfitLoss: {
+    type: Number,
+    default: 0,
+  }
 }, {timestamps: true, versionKey: false})
 
 const Portfolio = model("Portfolio", portFolioSchema)

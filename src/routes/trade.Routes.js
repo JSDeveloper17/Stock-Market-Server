@@ -6,4 +6,6 @@ const tradeRouter = express.Router()
 tradeRouter.post("/api/trades/buy",authentication, buyStock)
 tradeRouter.post("/api/trades/sell", authentication, sellStock)
 
-tradeRouter.get("/", authentication, getUserTrades)
+tradeRouter.get("/api/trades", authentication, getUserTrades)
+
+module.exports = tradeRouter

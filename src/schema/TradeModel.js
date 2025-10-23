@@ -1,8 +1,8 @@
-const {Schema, model, default: mongoose} = require("mongoose")
+const {Schema, model} = require("mongoose")
 
 const tradeSchema = new Schema({
     user:{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref:"Users",
         required:true
     },
@@ -30,7 +30,9 @@ const tradeSchema = new Schema({
         type:Number,
         required:true,
         min:0
-    }
+    },
+    executedAt: { type: Date, default: Date.now },
+  status: { type: String, enum: ["COMPLETED", "CANCELLED"], default: "COMPLETED" },
 }, {timestamps: true, versionKey: false})
 
 const Trades = model("Trades", tradeSchema)
