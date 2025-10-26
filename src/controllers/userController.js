@@ -34,11 +34,11 @@ async function registerUser(req,res) {
         if (user){
             return res.status(StatusCodes.CREATED).json({
                   message: "User registered successfully",
+                  token: token,
                   user:{
                     _id:user._id,
                     name:user.name,
                     email:user.email,
-                    token: token,
                     cashBalance: user.cashBalance,                  
                   }
             })
@@ -67,7 +67,7 @@ async function loginUser(req,res) {
                 message: "User not found. Please check your email."
             })
         }
-        const result = bcrypt.compare(password, user.password)
+        const result = await bcrypt.compare(password, user.password)
 
         if(!result){
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -79,11 +79,11 @@ async function loginUser(req,res) {
 
         return res.status(StatusCodes.OK).json({
             message: "Login successful",
+            token: token,
             user:{
                     _id:user._id,
                     name:user.name,
                     email:user.email,
-                    token: token,
                     cashBalance: user.cashBalance, 
                 }
         })

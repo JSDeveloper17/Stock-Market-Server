@@ -10,7 +10,15 @@ const portFolioRouter = require("./routes/portfolio.Routes.js")
 const app = express()
 app.use(express.json());
 const port = process.env.PORT || 5000;
-console.log("✅ Loaded userRouter from correct file");
+
+const cors = require('cors');
+// Allow requests from your frontend origin
+app.use(cors({
+     origin: 'http://localhost:5173',
+   //origin: 'https://stock-market-dashboard-dg.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Add other methods if needed
+  allowedHeaders: ['Content-Type', 'Authorization'], // If using tokens later
+}));
 
 app.use("/", userRouter)
 app.use("/", tradeRouter)
