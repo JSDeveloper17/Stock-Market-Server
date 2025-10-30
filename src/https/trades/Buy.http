@@ -1,7 +1,10 @@
 POST http://localhost:4000/api/trades/buy
 Content-Type:application/json
-Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGY4YTMxZmQ3OWRlZjk3YmVkYzEyYTgiLCJlbWFpbCI6InZpcmF0QGdtYWlsLmNvbSIsImlhdCI6MTc2MTE5NTAxMCwiZXhwIjoxNzYxMjgxNDEwfQ.gSB4ytnmpqg6W9MN2SMujh3zB9n0P2v7xi0Bev8GUA4
+Authorization:Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGY4YTMxZmQ3OWRlZjk3YmVkYzEyYTgiLCJlbWFpbCI6InZpcmF0QGdtYWlsLmNvbSIsImlhdCI6MTc2MTQ4MjYzMiwiZXhwIjoxNzYxNTY5MDMyfQ.X_OwI284X197Usk4VtsynBfZi0l3Wdm5Uj-5KDjEgWg
 {
   "symbol": "AAPL",
-  "quantity": 8
+  "quantity": 2
 }
+
+
+

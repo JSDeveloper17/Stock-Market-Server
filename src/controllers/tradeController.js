@@ -75,14 +75,99 @@ import { getLivePrice } from "../utils/alphaVantage.js";
 // };
 // Update portfolio for this specific user and stock
 
+// export const buyStock = async (req, res) => {
+//   try {
+//     const { symbol, quantity } = req.body;
+//     const userId = req.user._id;
+
+//     // Fetch live price
+//     const livePrice = await getLivePrice(symbol);
+//     const totalCost = livePrice * quantity;
+
+//     const user = await Users.findById(userId);
+//     if (!user) return res.status(404).json({ message: "User not found" });
+
+//     if (user.cashBalance < totalCost) {
+//       return res.status(400).json({ message: "Insufficient balance" });
+//     }
+
+//     // Deduct balance
+//     user.cashBalance -= totalCost;
+//     await user.save();
+
+//     // Record trade
+//     const trade = await Trades.create({
+//       user: userId,
+//       symbol,
+//       shares: quantity,
+//       price: livePrice,
+//       total: totalCost,
+//       type: "BUY",
+//     });
+
+//     // ✅ Update or create portfolio entry
+//     let portfolio = await Portfolio.findOne({ user: userId, symbol });
+
+//     if (portfolio) {
+//       const totalShares = portfolio.shares + quantity;
+//       const newAvgPrice =
+//         (portfolio.avgPrice * portfolio.shares + livePrice * quantity) / totalShares;
+
+//       portfolio.shares = totalShares;
+//       portfolio.avgPrice = newAvgPrice;
+//       portfolio.currentPrice = livePrice;
+//       portfolio.totalInvestment = portfolio.shares * portfolio.avgPrice;
+//       portfolio.unrealizedProfitLoss =
+//         portfolio.shares * (livePrice - portfolio.avgPrice);
+
+//       await portfolio.save();
+//     } else {
+//       portfolio = await Portfolio.create({
+//         user: userId,
+//         symbol,
+//         shares: quantity,
+//         avgPrice: livePrice,
+//         currentPrice: livePrice,
+//         totalInvestment: livePrice * quantity,
+//         unrealizedProfitLoss: 0,
+//       });
+//     }
+
+//     res.status(201).json({
+//       message: "Stock purchased successfully",
+//       trade,
+//       portfolio,
+//       updatedBalance: user.cashBalance,
+//     });
+//   } catch (error) {
+//     console.error("Buy Error:", error.message);
+//     res.status(500).json({ message: "Error buying stock", error: error.message });
+//   }
+// };
+
+
 export const buyStock = async (req, res) => {
   try {
     const { symbol, quantity } = req.body;
     const userId = req.user._id;
 
-    // Fetch live price
-    const livePrice = await getLivePrice(symbol);
+    // VALIDATE INPUT
+    if (!symbol || !quantity || quantity <= 0) {
+      return res.status(400).json({ message: "Valid symbol and quantity required" });
+    }
+
+    // FETCH PRICE SAFELY
+    const livePrice = await getLivePrice(symbol.toUpperCase());
+    if (!livePrice || isNaN(livePrice) || livePrice <= 0) {
+      return res.status(400).json({ 
+        message: `Invalid price for ${symbol}. Try again later.` 
+      });
+    }
+
     const totalCost = livePrice * quantity;
+    if (isNaN(totalCost)) {
+      return res.status(400).json({ message: "Invalid total cost calculation" });
+    }
 
     const user = await Users.findById(userId);
     if (!user) return res.status(404).json({ message: "User not found" });
@@ -91,60 +176,16 @@ export const buyStock = async (req, res) => {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    // Deduct balance
+    // NOW SAFE TO PROCEED
     user.cashBalance -= totalCost;
     await user.save();
 
-    // Record trade
-    const trade = await Trades.create({
-      user: userId,
-      symbol,
-      shares: quantity,
-      price: livePrice,
-      total: totalCost,
-      type: "BUY",
-    });
-
-    // ✅ Update or create portfolio entry
-    let portfolio = await Portfolio.findOne({ user: userId, symbol });
-
-    if (portfolio) {
-      const totalShares = portfolio.shares + quantity;
-      const newAvgPrice =
-        (portfolio.avgPrice * portfolio.shares + livePrice * quantity) / totalShares;
-
-      portfolio.shares = totalShares;
-      portfolio.avgPrice = newAvgPrice;
-      portfolio.currentPrice = livePrice;
-      portfolio.totalInvestment = portfolio.shares * portfolio.avgPrice;
-      portfolio.unrealizedProfitLoss =
-        portfolio.shares * (livePrice - portfolio.avgPrice);
-
-      await portfolio.save();
-    } else {
-      portfolio = await Portfolio.create({
-        user: userId,
-        symbol,
-        shares: quantity,
-        avgPrice: livePrice,
-        currentPrice: livePrice,
-        totalInvestment: livePrice * quantity,
-        unrealizedProfitLoss: 0,
-      });
-    }
-
-    res.status(201).json({
-      message: "Stock purchased successfully",
-      trade,
-      portfolio,
-      updatedBalance: user.cashBalance,
-    });
+    // ... rest of your code (trade, portfolio update)
   } catch (error) {
     console.error("Buy Error:", error.message);
     res.status(500).json({ message: "Error buying stock", error: error.message });
   }
 };
-
 
 // 🔴 Sell Stock
 // export const sellStock = async (req, res) => {
